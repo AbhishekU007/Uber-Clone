@@ -236,3 +236,113 @@ This endpoint is used to log out the authenticated user.
   "message": "Unauthorized"
 }
 ```
+
+# Captain Registration Endpoint
+
+## Endpoint
+`POST /captains/register`
+
+## Description
+This endpoint is used to register a new captain.
+
+## Request Body
+The request body should be a JSON object containing the following fields:
+
+```json
+{
+  "email": "captain@example.com", // string, required, must be a valid email
+  "fullname": {
+    "firstname": "Jane", // string, required, must be at least 3 characters long
+    "lastname": "Doe" // string, optional, if provided, must be at least 3 characters long
+  },
+  "password": "password123", // string, required, must be at least 6 characters long
+  "vehicle": {
+    "color": "red", // string, required, must be at least 3 characters long
+    "plate": "ABC123", // string, required, must be at least 3 characters long
+    "capacity": 4, // number, required, must be at least 1
+    "vehicleType": "car" // string, required, must be one of 'car', 'motorcycle', or 'auto'
+  }
+}
+```
+
+## Responses
+
+### Success
+- **Status Code**: `201 Created`
+- **Response Body**: A JSON object containing the authentication token and captain details.
+
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "captain": {
+    "_id": "60c72b2f9b1e8b001c8e4d5a",
+    "fullname": {
+      "firstname": "Jane",
+      "lastname": "Doe"
+    },
+    "email": "captain@example.com",
+    "vehicle": {
+      "color": "red",
+      "plate": "ABC123",
+      "capacity": 4,
+      "vehicleType": "car"
+    }
+  }
+}
+```
+
+### Validation Errors
+- **Status Code**: `400 Bad Request`
+- **Response Body**: A JSON object containing an array of validation error messages.
+
+```json
+{
+  "errors": [
+    {
+      "msg": "Invalid Email",
+      "param": "email",
+      "location": "body"
+    },
+    {
+      "msg": "First name must be at least 3 characters long",
+      "param": "fullname.firstname",
+      "location": "body"
+    },
+    {
+      "msg": "Password must be at least 6 characters long",
+      "param": "password",
+      "location": "body"
+    },
+    {
+      "msg": "Color must be at least 3 characters long",
+      "param": "vehicle.color",
+      "location": "body"
+    },
+    {
+      "msg": "Plate must be at least 3 characters long",
+      "param": "vehicle.plate",
+      "location": "body"
+    },
+    {
+      "msg": "Capacity must be at least 1",
+      "param": "vehicle.capacity",
+      "location": "body"
+    },
+    {
+      "msg": "Invalid vehicle type",
+      "param": "vehicle.vehicleType",
+      "location": "body"
+    }
+  ]
+}
+```
+
+### Captain Already Exists
+- **Status Code**: `400 Bad Request`
+- **Response Body**: A JSON object containing an error message.
+
+```json
+{
+  "message": "Captain already exists"
+}
+```
